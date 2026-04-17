@@ -22,6 +22,24 @@ const User = mongoose.model('User', {
   }
 })
 
+const Oficina = mongoose.model('Oficina', {
+  nome: String,
+  cnpj: String,
+  telefone: String,
+  endereco: String,
+
+  // 🔥 dono da oficina (relacionamento)
+  ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+})
+
 // rota login
 app.post('/login', async (req, res) => {
   const { email, password } = req.body
@@ -104,6 +122,48 @@ app.get('/user/:id', async (req, res) => {
     })
 
   } catch (err) {
+    res.status(500).json({ success: false })
+  }
+})
+
+app.post('/oficina', async (req, res) => {
+  const { nome, cnpj, telefone, endereco, ownerId } = req.body
+
+  try {
+    const novaOficina = await Oficina.create({
+      nome,
+      cnpj,
+      telefone,
+      endereco,
+      ownerId
+    })
+
+    res.json({
+      success: true,
+      oficina: novaOficina
+    })
+
+  } catch (error) {
+    res.status(500).json({ success: false })
+  }
+})
+
+app.get('/oficina/:userId', async (req, res) => {
+  const { userId } = req.params
+
+  try {
+    const oficina = await Oficina.findOne({ ownerId: userId })
+
+    if (!oficina) {
+      return res.status(404).json({ success: false })
+    }
+
+    res.json({
+      success: true,
+      oficina
+    })
+
+  } catch (error) {
     res.status(500).json({ success: false })
   }
 })
