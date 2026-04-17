@@ -14,7 +14,12 @@ mongoose.connect('mongodb://127.0.0.1:27017/oficina')
 // modelo usuário
 const User = mongoose.model('User', {
   email: String,
-  password: String
+  password: String,
+  type: {
+    type: String,
+    enum: ['Administrador', 'Gerente', 'Atendente', 'Financeiro'],
+    default: 'Atendente'
+  }
 })
 
 // rota login
@@ -34,19 +39,20 @@ app.post('/login', async (req, res) => {
     return res.status(401).json({ success: false })
   }
 
-  res.json({
-    success: true,
-    user: {
-      id: user._id,
-      email: user.email
-    }
-  })
+res.json({
+  success: true,
+  user: {
+    id: user._id,
+    email: user.email,
+    type: user.type
+  }
+})
 })
 
 const bcrypt = require('bcrypt')
 
 app.post('/register', async (req, res) => {
-  const { email, password } = req.body
+  const { email, password, type } = req.body
 
   try {
     const userExists = await User.findOne({ email })
@@ -58,12 +64,12 @@ app.post('/register', async (req, res) => {
       })
     }
 
-    // 🔐 criptografa senha
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const newUser = await User.create({
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      type: type || 'Atendente' // 👈 fallback
     })
 
     res.json({
@@ -73,8 +79,7 @@ app.post('/register', async (req, res) => {
 
   } catch (error) {
     res.status(500).json({
-      success: false,
-      message: 'Erro no servidor'
+      success: false
     })
   }
 })
@@ -92,7 +97,9 @@ app.get('/user/:id', async (req, res) => {
     res.json({
       success: true,
       user: {
-        email: user.email
+        id: user._id,
+        email: user.email,
+        type: user.type // 🔥 ISSO QUE FALTA
       }
     })
 

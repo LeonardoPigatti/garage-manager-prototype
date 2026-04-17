@@ -17,8 +17,8 @@
 
       <!-- Só mostra se tiver usuário -->
       <div v-if="user">
-        <h2>Olá, {{ user.name || 'Usuário' }} 👋</h2>
-        <p>{{ user.email }}</p>
+<h2>Olá, {{ user.email }} 👋</h2>
+<p>Tipo: {{ user.type }}</p>
       </div>
 
       <div v-else>

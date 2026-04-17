@@ -184,8 +184,9 @@ async handleLogin() {
     }
 
     // salva ID
-    localStorage.setItem('userId', data.user.id)
+localStorage.setItem('userId', data.user.id)
 
+localStorage.setItem('user', JSON.stringify(data.user))
     // salva auth
     localStorage.setItem('auth', 'true')
 
