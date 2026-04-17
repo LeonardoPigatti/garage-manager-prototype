@@ -21,28 +21,34 @@ const User = mongoose.model('User', {
 app.post('/login', async (req, res) => {
   const { email, password } = req.body
 
-  const user = await User.findOne({ email, password })
+  const user = await User.findOne({ email })
 
-  if (user) {
-    res.json({
-      success: true,
-      user: {
-        id: user._id,
-        email: user.email
-      }
-    })
-  } else {
-    res.status(401).json({
-      success: false
-    })
+  if (!user) {
+    return res.status(401).json({ success: false })
   }
+
+  // 🔐 compara senha digitada com hash
+  const isMatch = await bcrypt.compare(password, user.password)
+
+  if (!isMatch) {
+    return res.status(401).json({ success: false })
+  }
+
+  res.json({
+    success: true,
+    user: {
+      id: user._id,
+      email: user.email
+    }
+  })
 })
+
+const bcrypt = require('bcrypt')
 
 app.post('/register', async (req, res) => {
   const { email, password } = req.body
 
   try {
-    // verifica se já existe
     const userExists = await User.findOne({ email })
 
     if (userExists) {
@@ -52,10 +58,12 @@ app.post('/register', async (req, res) => {
       })
     }
 
-    // cria usuário
+    // 🔐 criptografa senha
+    const hashedPassword = await bcrypt.hash(password, 10)
+
     const newUser = await User.create({
       email,
-      password
+      password: hashedPassword
     })
 
     res.json({
