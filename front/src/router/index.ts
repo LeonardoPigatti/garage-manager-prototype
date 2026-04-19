@@ -16,13 +16,10 @@ const router = createRouter({
 })
 
 // 🔐 proteção
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
   const isAuth = localStorage.getItem('auth')
-
   if (to.path === '/dashboard' && !isAuth) {
-    next('/login')
-  } else {
-    next()
+    return '/login'
   }
 })
 

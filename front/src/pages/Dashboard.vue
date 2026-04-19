@@ -1,129 +1,117 @@
 <template>
   <div class="dashboard">
+
+    <!-- Hamburguer mobile -->
+    <button v-if="isMobile" class="hamburger" @click="sidebarOpen = true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+
     <!-- Sidebar -->
-    <aside class="sidebar">
-      <h2>Oficina</h2>
-      <ul>
-        <li>Início</li>
-        <li>Clientes</li>
-        <li>Serviços</li>
-      </ul>
-    </aside>
+    <Sidebar
+      :isOpen="sidebarOpen"
+      :user="user"
+      @toggle="sidebarOpen = !sidebarOpen"
+      @close="sidebarOpen = false"
+      @logout="logout"
+    />
 
     <!-- Conteúdo -->
     <main class="content">
       <h1>Dashboard</h1>
       <p>Bem-vindo ao sistema 👋</p>
-
-      <!-- Só mostra se tiver usuário -->
-      <div v-if="user">
-<h2>Olá, {{ user.email }} 👋</h2>
-<p>Tipo: {{ user.type }}</p>
-      </div>
-
-      <div v-else>
-        <p>Carregando usuário...</p>
-      </div>
-
-      <button @click="logout">Sair</button>
     </main>
+
   </div>
 </template>
 
 <script>
+import Sidebar from '../components/Sidebar.vue'
+
 export default {
   name: 'DashboardPage',
+  components: { Sidebar },
 
   data() {
     return {
-      user: null
+      user: null,
+      sidebarOpen: true,
+      isMobile: window.innerWidth <= 768
     }
+  },
+
+  mounted() {
+    window.addEventListener('resize', this.handleResize)
+
+    const userRaw = localStorage.getItem('user')
+    if (!userRaw) {
+      this.$router.push('/login')
+      return
+    }
+    try {
+      this.user = JSON.parse(userRaw)
+    } catch {
+      this.$router.push('/login')
+    }
+  },
+
+  beforeUnmount() {
+    window.removeEventListener('resize', this.handleResize)
   },
 
   methods: {
+    handleResize() {
+      this.isMobile = window.innerWidth <= 768
+      if (!this.isMobile) this.sidebarOpen = true
+    },
     logout() {
       localStorage.removeItem('auth')
-      localStorage.removeItem('user') // 🔥 importante limpar também
+      localStorage.removeItem('user')
+      localStorage.removeItem('userId')
       this.$router.push('/login')
     }
-  },
-
-mounted() {
-  const userId = localStorage.getItem('userId')
-
-  if (!userId) {
-    this.$router.push('/login')
-    return
   }
-
-  fetch(`http://localhost:3000/user/${userId}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        this.user = data.user
-      } else {
-        this.$router.push('/login')
-      }
-    })
-    .catch(() => {
-      this.$router.push('/login')
-    })
-}
 }
 </script>
 
 <style scoped>
 .dashboard {
   display: flex;
-  height: 100vh;
-}
-
-/* Sidebar */
-.sidebar {
-  width: 220px;
-  background: #001B35;
-  color: white;
-  padding: 1.5rem;
-}
-
-.sidebar h2 {
-  margin-bottom: 1.5rem;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar li {
-  margin-bottom: 1rem;
-  cursor: pointer;
-  opacity: 0.8;
-  transition: 0.2s;
-}
-
-.sidebar li:hover {
-  opacity: 1;
-}
-
-/* Conteúdo */
-.content {
-  flex: 1;
-  padding: 2rem;
+  min-height: 100vh;
   background: #f1f5f9;
 }
 
-button {
-  margin-top: 20px;
-  padding: 10px 16px;
-  border: none;
-  background: #001B35;
+.content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 97;
+  background: #1a1f5e;
   color: white;
-  border-radius: 8px;
+  border: none;
+  border-radius: 10px;
+  padding: 8px;
   cursor: pointer;
 }
 
-button:hover {
-  opacity: 0.9;
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .content {
+    padding: 72px 1.2rem 1.5rem;
+  }
 }
 </style>
