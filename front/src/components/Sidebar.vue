@@ -89,46 +89,47 @@ export default {
     return {
       isMobile: window.innerWidth <= 768,
       activeItem: 'All Services',
-      menuItems: [
-        {
-          label: 'All Services',
-          count: 22,
-          icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="8" y1="6" x2="21" y2="6"/>
-            <line x1="8" y1="12" x2="21" y2="12"/>
-            <line x1="8" y1="18" x2="21" y2="18"/>
-            <line x1="3" y1="6" x2="3.01" y2="6"/>
-            <line x1="3" y1="12" x2="3.01" y2="12"/>
-            <line x1="3" y1="18" x2="3.01" y2="18"/>
-          </svg>`
-        },
-        {
-          label: 'Scheduled',
-          count: 1,
-          icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>`
-        },
-        {
-          label: 'In Progress',
-          count: 1,
-          icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
-          </svg>`
-        },
-        {
-          label: 'Completed',
-          count: 20,
-          icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-            <polyline points="22 4 12 14.01 9 11.01"/>
-          </svg>`
-        }
-      ]
+menuItems: [
+  {
+    label: 'All Services',
+    count: 22,
+    route: '/all-services',
+    icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="8" y1="6" x2="21" y2="6"/>
+      <line x1="8" y1="12" x2="21" y2="12"/>
+      <line x1="8" y1="18" x2="21" y2="18"/>
+      <line x1="3" y1="6" x2="3.01" y2="6"/>
+      <line x1="3" y1="12" x2="3.01" y2="12"/>
+      <line x1="3" y1="18" x2="3.01" y2="18"/>
+    </svg>`
+  },
+//   {
+//     label: 'Scheduled',
+//     count: 1,
+//     icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+//       <rect x="3" y="4" width="18" height="18" rx="2"/>
+//       <line x1="16" y1="2" x2="16" y2="6"/>
+//       <line x1="8" y1="2" x2="8" y2="6"/>
+//       <line x1="3" y1="10" x2="21" y2="10"/>
+//     </svg>`
+//   },
+//   {
+//     label: 'In Progress',
+//     count: 1,
+//     icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+//       <circle cx="12" cy="12" r="10"/>
+//       <polyline points="12 6 12 12 16 14"/>
+//     </svg>`
+//   },
+//   {
+//     label: 'Completed',
+//     count: 20,
+//     icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+//       <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+//       <polyline points="22 4 12 14.01 9 11.01"/>
+//     </svg>`
+//   }
+]
     }
   },
   mounted() {
@@ -144,10 +145,14 @@ export default {
     handleToggle() {
       this.$emit('toggle')
     },
-    setActive(label) {
-      this.activeItem = label
-      if (this.isMobile) this.$emit('close')
-    }
+setActive(label) {
+  this.activeItem = label
+  const item = this.menuItems.find(i => i.label === label)
+  if (item?.route) {
+    this.$router.push(item.route)
+  }
+  if (this.isMobile) this.$emit('close')
+}
   }
 }
 </script>
@@ -211,7 +216,7 @@ export default {
     position: fixed;
     top: 0; left: 0;
     z-index: 99;
-    width: 240px !important;
+    width: 270px !important;
     min-width: 240px !important;
     transform: translateX(-100%);
     transition: transform 0.35s cubic-bezier(.4, 0, .2, 1);

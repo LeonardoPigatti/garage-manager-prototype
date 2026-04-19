@@ -1,13 +1,13 @@
 <template>
   <div class="page">
-    <h1 class="page-title">Dashboard</h1>
-    <p class="page-sub">Bem-vindo ao sistema 👋</p>
+    <h1 class="page-title">All Services</h1>
+    <p class="page-sub">Você está na página de todos os serviços.</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'DashboardPage'
+  name: 'AllServicesPage'
 }
 </script>
 
