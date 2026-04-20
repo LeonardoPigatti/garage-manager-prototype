@@ -67,34 +67,58 @@
       </div>
 
       <!-- Seção: Dados do Cliente -->
-      <div class="form-section">
-        <div class="section-header">
-          <div class="section-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-            </svg>
-          </div>
-          <span>Dados do Cliente</span>
-        </div>
+<div class="form-section">
+  <div class="section-header">
+    <div class="section-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+    </div>
+    <span>Dados do Cliente</span>
+  </div>
 
-        <div class="fields-grid">
-          <div class="field-group full">
-            <label class="field-label">Telefone do Cliente <span class="required">*</span></label>
-            <div class="field-wrapper">
-              <span class="field-icon">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 5.45 5.45l.96-.87a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/></svg>
-              </span>
-              <input
-                v-model="form.phone"
-                class="field-input"
-                placeholder="(00) 00000-0000"
-                @input="maskPhone"
-                maxlength="15"
-              />
-            </div>
-          </div>
-        </div>
+  <div class="fields-grid">
+    
+    <!-- Nome do cliente -->
+    <div class="field-group full">
+      <label class="field-label">Nome do Cliente <span class="required">*</span></label>
+      <div class="field-wrapper">
+        <span class="field-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </span>
+        <input
+          v-model="form.customer"
+          class="field-input"
+          placeholder="Digite o nome do cliente"
+        />
       </div>
+    </div>
+
+    <!-- Telefone -->
+    <div class="field-group full">
+      <label class="field-label">Telefone do Cliente <span class="required">*</span></label>
+      <div class="field-wrapper">
+        <span class="field-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 5.45 5.45l.96-.87a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/>
+          </svg>
+        </span>
+        <input
+          v-model="form.phone"
+          class="field-input"
+          placeholder="(00) 00000-0000"
+          @input="maskPhone"
+          maxlength="15"
+        />
+      </div>
+    </div>
+
+  </div>
+</div>
 
       <!-- Seção: Dados da Oficina -->
       <div class="form-section">
@@ -182,6 +206,7 @@ export default {
       osNumber: this.generateOSNumber(),
       form: {
         vnumber: '',
+        customer: '',
         phone: '',
         mileage: '',
         employee: '',
@@ -209,8 +234,9 @@ export default {
     },
 
     validate() {
-      const { vnumber, phone, mileage, employee, boxNumber, entryDate } = this.form
+      const { vnumber, customer, phone, mileage, employee, boxNumber, entryDate } = this.form
       if (!vnumber) return 'Informe a placa do veículo'
+      if (!customer) return 'Informe o nome do cliente'
       if (!phone) return 'Informe o telefone do cliente'
       if (!mileage) return 'Informe a quilometragem'
       if (!employee) return 'Informe o funcionário responsável'
@@ -231,6 +257,7 @@ export default {
           body: JSON.stringify({
             osNumber: this.osNumber,
             vnumber: this.form.vnumber,
+            customer: this.form.customer,
             phone: this.form.phone,
             mileage: Number(this.form.mileage),
             employee: this.form.employee,
