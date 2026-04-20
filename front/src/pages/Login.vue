@@ -109,7 +109,9 @@
 
           <!-- Forgot Password -->
           <div class="form-meta">
-            <a href="#" class="forgot-link">Esqueceu a senha?</a>
+            <a href="#" class="forgot-link" @click.prevent="$router.push('/forgot-password')">
+              Esqueceu a senha?
+            </a>
           </div>
 
           <!-- Submit Button -->
