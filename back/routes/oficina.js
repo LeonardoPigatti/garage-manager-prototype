@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const Oficina = require('../models/Oficina')
 const ServiceOrder = require('../models/ServiceOrder')
+const User = require('../models/User')
 
 // ─── ORDENS DE SERVIÇO (antes do /:userId) ───────────
 
@@ -33,17 +34,49 @@ router.get('/service-orders/:id', async (req, res) => {
   }
 })
 
-// ─── OFICINA (depois, pois /:userId é genérico) ───────
+// ─── OFICINA ─────────────────────────────────────────
 
+// criar oficina — owner já entra como membro
 router.post('/', async (req, res) => {
-  const oficina = await Oficina.create(req.body)
-  res.json({ success: true, oficina })
+  try {
+    const oficina = await Oficina.create({
+      ...req.body,
+      membros: [req.body.ownerId]
+    })
+    // vincula a oficina no user owner
+    await User.findByIdAndUpdate(req.body.ownerId, { oficinaId: oficina._id })
+    res.json({ success: true, oficina })
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message })
+  }
 })
 
+// adicionar funcionário à oficina
+router.post('/:oficinaId/membros', async (req, res) => {
+  try {
+    const { userId } = req.body
+
+    await User.findByIdAndUpdate(userId, { oficinaId: req.params.oficinaId })
+
+    await Oficina.findByIdAndUpdate(req.params.oficinaId, {
+      $addToSet: { membros: userId }
+    })
+
+    res.json({ success: true })
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message })
+  }
+})
+
+// buscar oficina por userId (deve ficar por último — rota genérica)
 router.get('/:userId', async (req, res) => {
-  const oficina = await Oficina.findOne({ ownerId: req.params.userId })
-  if (!oficina) return res.status(404).json({ success: false })
-  res.json({ success: true, oficina })
+  try {
+    const oficina = await Oficina.findOne({ ownerId: req.params.userId })
+    if (!oficina) return res.status(404).json({ success: false })
+    res.json({ success: true, oficina })
+  } catch (err) {
+    res.status(500).json({ success: false })
+  }
 })
 
 module.exports = router

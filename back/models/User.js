@@ -7,6 +7,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: ['Administrador', 'Gerente', 'Atendente', 'Financeiro'],
     default: 'Atendente'
+  },
+  oficinaId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Oficina',
+    default: null
   }
 })
 
