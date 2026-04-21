@@ -79,4 +79,17 @@ router.get('/:userId', async (req, res) => {
   }
 })
 
+router.put('/:oficinaId', async (req, res) => {
+  try {
+    const oficina = await Oficina.findByIdAndUpdate(
+      req.params.oficinaId,
+      req.body,
+      { new: true }
+    )
+    res.json({ success: true, oficina })
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message })
+  }
+})
+
 module.exports = router

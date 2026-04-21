@@ -55,13 +55,13 @@
 
         <!-- Footer -->
         <div class="sb-footer">
-          <div class="sb-user" v-if="user">
-            <div class="sb-avatar">{{ user.email[0].toUpperCase() }}</div>
-            <div class="sb-user-info">
-              <span class="sb-email">{{ user.email }}</span>
-              <span class="sb-type">{{ user.type }}</span>
-            </div>
-          </div>
+<div class="sb-user" v-if="user" @click="$router.push('/settings')" style="cursor:pointer">
+  <div class="sb-avatar">{{ user.email[0].toUpperCase() }}</div>
+  <div class="sb-user-info">
+    <span class="sb-email">{{ user.email }}</span>
+    <span class="sb-type">{{ user.type }}</span>
+  </div>
+</div>
           <button class="sb-logout" @click="$emit('logout')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
