@@ -1,12 +1,11 @@
 <template>
   <div class="app">
-    <!-- LEFT PANEL: Image / Brand Side -->
     <div class="panel-left">
       <div class="overlay"></div>
 
       <div class="brand">
         <div class="logo">
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
             <circle cx="24" cy="24" r="22" stroke="#F59E0B" stroke-width="2.5"/>
             <path d="M24 8L27.5 18H38L29.5 24.5L32.5 35L24 28.5L15.5 35L18.5 24.5L10 18H20.5L24 8Z" fill="#F59E0B"/>
             <circle cx="24" cy="24" r="5" fill="#1E3A5F"/>
@@ -20,129 +19,86 @@
       </div>
 
       <div class="hero-content">
-        <h2 class="hero-title">Sua oficina.<br/>No controle total.</h2>
-        <p class="hero-desc">Gerencie ordens de serviço, estoque e clientes em um único painel profissional.</p>
+        <h2 class="hero-title" style="white-space: pre-line">{{ $t('login.heroTitle') }}</h2>
+        <p class="hero-desc">{{ $t('login.heroDesc') }}</p>
 
         <div class="stats">
           <div class="stat">
             <span class="stat-num">2.4k</span>
-            <span class="stat-label">Oficinas ativas</span>
+            <span class="stat-label">{{ $t('login.statWorkshops') }}</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat">
             <span class="stat-num">98%</span>
-            <span class="stat-label">Satisfação</span>
+            <span class="stat-label">{{ $t('login.statSatisfaction') }}</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat">
             <span class="stat-num">12x</span>
-            <span class="stat-label">Mais produtivo</span>
+            <span class="stat-label">{{ $t('login.statProductivity') }}</span>
           </div>
         </div>
       </div>
-
     </div>
 
-    <!-- RIGHT PANEL: Login Form -->
     <div class="panel-right">
       <div class="login-card">
         <div class="card-header">
-          <h1 class="card-title">Bem-vindo de volta</h1>
-          <p class="card-subtitle">Entre na sua conta para continuar</p>
+          <h1 class="card-title">{{ $t('login.cardTitle') }}</h1>
+          <p class="card-subtitle">{{ $t('login.cardSubtitle') }}</p>
         </div>
 
         <form class="form" @submit.prevent="handleLogin">
-          <!-- Email Field -->
           <div class="field-group" :class="{ focused: focusedField === 'email', filled: form.email }">
-            <label class="field-label">E-mail</label>
+            <label class="field-label">{{ $t('login.emailLabel') }}</label>
             <div class="field-wrapper">
               <span class="field-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                  <circle cx="12" cy="7" r="4"/>
-                </svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               </span>
-              <input
-                type="email"
-                v-model="form.email"
-                placeholder="seu@email.com"
-                class="field-input"
-                @focus="focusedField = 'email'"
-                @blur="focusedField = null"
-                required
-              />
+              <input type="email" v-model="form.email" :placeholder="$t('login.emailPlaceholder')" class="field-input" @focus="focusedField = 'email'" @blur="focusedField = null" required/>
             </div>
           </div>
 
-          <!-- Password Field -->
           <div class="field-group" :class="{ focused: focusedField === 'password', filled: form.password }">
-            <label class="field-label">Senha</label>
+            <label class="field-label">{{ $t('login.passwordLabel') }}</label>
             <div class="field-wrapper">
               <span class="field-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               </span>
-              <input
-                :type="showPassword ? 'text' : 'password'"
-                v-model="form.password"
-                placeholder="••••••••"
-                class="field-input"
-                @focus="focusedField = 'password'"
-                @blur="focusedField = null"
-                required
-              />
+              <input :type="showPassword ? 'text' : 'password'" v-model="form.password" placeholder="••••••••" class="field-input" @focus="focusedField = 'password'" @blur="focusedField = null" required/>
               <button type="button" class="toggle-password" @click="showPassword = !showPassword">
-                <svg v-if="!showPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-                <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-                  <line x1="1" y1="1" x2="23" y2="23"/>
-                </svg>
+                <svg v-if="!showPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
               </button>
             </div>
           </div>
 
-          <!-- Forgot Password -->
           <div class="form-meta">
             <a href="#" class="forgot-link" @click.prevent="$router.push('/forgot-password')">
-              Esqueceu a senha?
+              {{ $t('login.forgotPassword') }}
             </a>
           </div>
 
-          <!-- Submit Button -->
           <button type="submit" class="btn-login" :class="{ loading: isLoading }">
             <span v-if="!isLoading" class="btn-text">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                <polyline points="10 17 15 12 10 7"/>
-                <line x1="15" y1="12" x2="3" y2="12"/>
-              </svg>
-              Entrar na plataforma
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+              {{ $t('login.loginBtn') }}
             </span>
             <span v-else class="btn-spinner">
-              <svg class="spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-              </svg>
-              Autenticando...
+              <svg class="spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+              {{ $t('login.authenticating') }}
             </span>
           </button>
         </form>
 
         <div class="card-footer">
-          <span class="footer-text">Não tem uma conta?</span>
-          <a href="#" class="create-link">Criar conta gratuita</a>
+          <span class="footer-text">{{ $t('login.noAccount') }}</span>
+          <a href="#" class="create-link">{{ $t('login.createAccount') }}</a>
         </div>
 
         <div class="security-badge">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-          <span>Conexão segura e criptografada</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>{{ $t('login.secureConnection') }}</span>
         </div>
       </div>
     </div>
@@ -154,52 +110,34 @@ export default {
   name: 'LoginPage',
   data() {
     return {
-      form: {
-        email: '',
-        password: ''
-      },
+      form: { email: '', password: '' },
       focusedField: null,
       showPassword: false,
       isLoading: false
     }
   },
   methods: {
-async handleLogin() {
-  this.isLoading = true
+    async handleLogin() {
+      this.isLoading = true
+      try {
+        const response = await fetch('http://localhost:3000/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.form.email, password: this.form.password })
+        })
+        const data = await response.json()
+        if (!response.ok || !data.success) throw new Error()
 
-  try {
-    const response = await fetch('http://localhost:3000/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: this.form.email,
-        password: this.form.password
-      })
-    })
-
-    const data = await response.json()
-
-    if (!response.ok || !data.success) {
-      throw new Error('Credenciais inválidas')
+        localStorage.setItem('userId', data.user.id)
+        localStorage.setItem('user', JSON.stringify(data.user))
+        localStorage.setItem('auth', 'true')
+        this.$router.push('/dashboard')
+      } catch {
+        alert(this.$t('login.errorLogin'))
+      } finally {
+        this.isLoading = false
+      }
     }
-
-    // salva ID
-localStorage.setItem('userId', data.user.id)
-
-localStorage.setItem('user', JSON.stringify(data.user))
-    // salva auth
-    localStorage.setItem('auth', 'true')
-
-    this.$router.push('/dashboard')
-
-  } catch (error) {
-    alert('Email ou senha inválidos')
-  } finally {
-    this.isLoading = false
-  }
-}
   }
 }
 </script>

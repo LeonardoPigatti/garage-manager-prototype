@@ -15,15 +15,14 @@
         </div>
       </div>
       <div class="hero-content">
-        <h2 class="hero-title">Recupere<br/>seu acesso.</h2>
-        <p class="hero-desc">Siga os passos para redefinir sua senha com segurança.</p>
+        <h2 class="hero-title" style="white-space: pre-line">{{ $t('forgotPassword.heroTitle') }}</h2>
+        <p class="hero-desc">{{ $t('forgotPassword.heroDesc') }}</p>
       </div>
     </div>
 
     <div class="panel-right">
       <div class="login-card">
 
-        <!-- Progress -->
         <div class="progress">
           <div class="prog-step" :class="{ done: step >= 1 }"></div>
           <div class="prog-step" :class="{ done: step >= 2 }"></div>
@@ -31,90 +30,71 @@
           <span class="prog-label">{{ progressLabel }}</span>
         </div>
 
-        <!-- STEP 1: Email -->
+        <!-- STEP 1 -->
         <div v-if="step === 1">
           <div class="icon-wrap">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
-            </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           </div>
-          <h1 class="card-title">Esqueceu a senha?</h1>
-          <p class="card-subtitle">Digite seu e-mail e enviaremos um código de verificação.</p>
+          <h1 class="card-title">{{ $t('forgotPassword.step1Title') }}</h1>
+          <p class="card-subtitle">{{ $t('forgotPassword.step1Subtitle') }}</p>
 
           <div class="field-group">
-            <label class="field-label">E-mail</label>
+            <label class="field-label">{{ $t('forgotPassword.emailLabel') }}</label>
             <div class="field-wrapper">
-              <span class="field-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              </span>
-              <input type="email" v-model="email" class="field-input" placeholder="seu@email.com"/>
+              <span class="field-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+              <input type="email" v-model="email" class="field-input" :placeholder="$t('forgotPassword.emailPlaceholder')"/>
             </div>
           </div>
 
           <button class="btn-primary" :class="{ loading: isLoading }" @click="sendEmail">
-            <span v-if="!isLoading">Enviar código</span>
+            <span v-if="!isLoading">{{ $t('forgotPassword.sendCode') }}</span>
             <span v-else class="btn-spinner">
               <svg class="spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-              Enviando...
+              {{ $t('forgotPassword.sending') }}
             </span>
           </button>
 
           <div class="back-link" @click="$router.push('/login')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-            Voltar ao login
+            {{ $t('forgotPassword.backToLogin') }}
           </div>
         </div>
 
-        <!-- STEP 2: Código -->
+        <!-- STEP 2 -->
         <div v-if="step === 2">
           <div class="icon-wrap">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
-          <h1 class="card-title">Verifique seu e-mail</h1>
-          <p class="card-subtitle">Enviamos um código de 4 dígitos para <strong>{{ email }}</strong>.</p>
+          <h1 class="card-title">{{ $t('forgotPassword.step2Title') }}</h1>
+          <p class="card-subtitle">{{ $t('forgotPassword.step2Subtitle') }} <strong>{{ email }}</strong>.</p>
 
           <div class="code-inputs">
-            <input
-              v-for="(_, i) in code"
-              :key="i"
-              :ref="'code' + i"
-              class="code-input"
-              maxlength="1"
-              v-model="code[i]"
-              @input="nextCode(i)"
-              @keydown.backspace="prevCode(i)"
-            />
+            <input v-for="(_, i) in code" :key="i" :ref="'code' + i" class="code-input" maxlength="1" v-model="code[i]" @input="nextCode(i)" @keydown.backspace="prevCode(i)"/>
           </div>
 
-          <button class="btn-primary" @click="verifyCode">Verificar código</button>
+          <button class="btn-primary" @click="verifyCode">{{ $t('forgotPassword.verifyCode') }}</button>
 
           <p class="resend-text">
-            Não recebeu?
-            <span class="resend-link" @click="sendEmail">Reenviar código</span>
+            {{ $t('forgotPassword.noCode') }}
+            <span class="resend-link" @click="sendEmail">{{ $t('forgotPassword.resend') }}</span>
           </p>
 
           <div class="back-link" @click="step = 1">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-            Voltar
+            {{ $t('forgotPassword.back') }}
           </div>
         </div>
 
-        <!-- STEP 3: Nova senha -->
+        <!-- STEP 3 -->
         <div v-if="step === 3">
           <div class="icon-wrap">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
-          <h1 class="card-title">Nova senha</h1>
-          <p class="card-subtitle">Crie uma senha forte para proteger sua conta.</p>
+          <h1 class="card-title">{{ $t('forgotPassword.step3Title') }}</h1>
+          <p class="card-subtitle">{{ $t('forgotPassword.step3Subtitle') }}</p>
 
           <div class="field-group">
-            <label class="field-label">Nova senha</label>
+            <label class="field-label">{{ $t('forgotPassword.newPassword') }}</label>
             <div class="field-wrapper">
               <span class="field-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
               <input :type="showPass ? 'text' : 'password'" v-model="newPassword" class="field-input" placeholder="••••••••"/>
@@ -126,7 +106,7 @@
           </div>
 
           <div class="field-group">
-            <label class="field-label">Confirmar senha</label>
+            <label class="field-label">{{ $t('forgotPassword.confirmPassword') }}</label>
             <div class="field-wrapper">
               <span class="field-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
               <input :type="showPass ? 'text' : 'password'" v-model="confirmPassword" class="field-input" placeholder="••••••••"/>
@@ -134,29 +114,27 @@
           </div>
 
           <button class="btn-primary" :class="{ loading: isLoading }" @click="resetPassword">
-            <span v-if="!isLoading">Redefinir senha</span>
+            <span v-if="!isLoading">{{ $t('forgotPassword.resetPassword') }}</span>
             <span v-else class="btn-spinner">
               <svg class="spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-              Salvando...
+              {{ $t('forgotPassword.saving') }}
             </span>
           </button>
 
           <div class="back-link" @click="step = 2">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-            Voltar
+            {{ $t('forgotPassword.back') }}
           </div>
         </div>
 
-        <!-- STEP 4: Sucesso -->
+        <!-- STEP 4 -->
         <div v-if="step === 4" class="success-wrap">
           <div class="success-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <h1 class="card-title" style="text-align:center">Senha redefinida!</h1>
-          <p class="card-subtitle" style="text-align:center">Sua senha foi alterada com sucesso.</p>
-          <button class="btn-primary" @click="$router.push('/login')">Ir para o login</button>
+          <h1 class="card-title" style="text-align:center">{{ $t('forgotPassword.step4Title') }}</h1>
+          <p class="card-subtitle" style="text-align:center">{{ $t('forgotPassword.step4Subtitle') }}</p>
+          <button class="btn-primary" @click="$router.push('/login')">{{ $t('forgotPassword.goToLogin') }}</button>
         </div>
 
       </div>
@@ -180,13 +158,13 @@ export default {
   },
   computed: {
     progressLabel() {
-      if (this.step === 4) return 'Concluído'
-      return `Passo ${this.step} de 3`
+      if (this.step === 4) return this.$t('forgotPassword.stepDone')
+      return this.$t('forgotPassword.stepLabel').replace('{step}', this.step)
     }
   },
   methods: {
     async sendEmail() {
-      if (!this.email) return alert('Digite seu e-mail')
+      if (!this.email) return alert(this.$t('forgotPassword.errorEmail'))
       this.isLoading = true
       try {
         const res = await fetch('http://localhost:3000/forgot-password', {
@@ -198,7 +176,7 @@ export default {
         if (!data.success) throw new Error()
         this.step = 2
       } catch {
-        alert('Erro ao enviar e-mail. Tente novamente.')
+        alert(this.$t('forgotPassword.errorSendEmail'))
       } finally {
         this.isLoading = false
       }
@@ -206,7 +184,7 @@ export default {
 
     async verifyCode() {
       const codeStr = this.code.join('')
-      if (codeStr.length < 4) return alert('Digite o código completo')
+      if (codeStr.length < 4) return alert(this.$t('forgotPassword.errorCode'))
       try {
         const res = await fetch('http://localhost:3000/verify-code', {
           method: 'POST',
@@ -217,13 +195,13 @@ export default {
         if (!data.success) throw new Error()
         this.step = 3
       } catch {
-        alert('Código inválido ou expirado.')
+        alert(this.$t('forgotPassword.errorInvalidCode'))
       }
     },
 
     async resetPassword() {
-      if (!this.newPassword) return alert('Digite a nova senha')
-      if (this.newPassword !== this.confirmPassword) return alert('As senhas não coincidem')
+      if (!this.newPassword) return alert(this.$t('forgotPassword.errorNewPassword'))
+      if (this.newPassword !== this.confirmPassword) return alert(this.$t('forgotPassword.errorPasswordMismatch'))
       this.isLoading = true
       try {
         const res = await fetch('http://localhost:3000/reset-password', {
@@ -235,7 +213,7 @@ export default {
         if (!data.success) throw new Error()
         this.step = 4
       } catch {
-        alert('Erro ao redefinir senha. Tente novamente.')
+        alert(this.$t('forgotPassword.errorReset'))
       } finally {
         this.isLoading = false
       }
@@ -243,17 +221,13 @@ export default {
 
     nextCode(index) {
       if (this.code[index] && index < 3) {
-        this.$nextTick(() => {
-          this.$refs['code' + (index + 1)][0].focus()
-        })
+        this.$nextTick(() => { this.$refs['code' + (index + 1)][0].focus() })
       }
     },
 
     prevCode(index) {
       if (!this.code[index] && index > 0) {
-        this.$nextTick(() => {
-          this.$refs['code' + (index - 1)][0].focus()
-        })
+        this.$nextTick(() => { this.$refs['code' + (index - 1)][0].focus() })
       }
     }
   }

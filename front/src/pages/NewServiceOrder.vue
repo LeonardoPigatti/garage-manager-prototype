@@ -7,172 +7,106 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
         <div>
-          <h1 class="page-title">Nova Ordem de Serviço</h1>
-          <p class="page-sub">Preencha os dados para registrar a entrada do veículo</p>
+          <h1 class="page-title">{{ $t('newServiceOrder.title') }}</h1>
+          <p class="page-sub">{{ $t('newServiceOrder.subtitle') }}</p>
         </div>
       </div>
       <div class="os-badge">
-        <span class="os-label">Nº da OS</span>
+        <span class="os-label">{{ $t('newServiceOrder.osLabel') }}</span>
         <span class="os-number">{{ osNumber }}</span>
       </div>
     </div>
 
     <div class="form-body">
 
-      <!-- Seção: Dados do Veículo -->
+      <!-- Veículo -->
       <div class="form-section">
         <div class="section-header">
           <div class="section-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
-            </svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
           </div>
-          <span>Dados do Veículo</span>
+          <span>{{ $t('newServiceOrder.vehicleSection') }}</span>
         </div>
 
         <div class="fields-grid">
           <div class="field-group">
-            <label class="field-label">Placa do Veículo <span class="required">*</span></label>
+            <label class="field-label">{{ $t('newServiceOrder.plate') }} <span class="required">*</span></label>
             <div class="field-wrapper">
-              <span class="field-icon">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M5 7V5m14 2V5"/></svg>
-              </span>
-              <input
-                v-model="form.vnumber"
-                class="field-input"
-                placeholder="ABC-1234"
-                @input="form.vnumber = form.vnumber.toUpperCase()"
-                maxlength="8"
-              />
+              <span class="field-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M5 7V5m14 2V5"/></svg></span>
+              <input v-model="form.vnumber" class="field-input" :placeholder="$t('newServiceOrder.platePlaceholder')" @input="form.vnumber = form.vnumber.toUpperCase()" maxlength="8"/>
             </div>
           </div>
 
           <div class="field-group">
-            <label class="field-label">Quilometragem <span class="required">*</span></label>
+            <label class="field-label">{{ $t('newServiceOrder.mileage') }} <span class="required">*</span></label>
             <div class="field-wrapper">
-              <span class="field-icon">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-              </span>
-              <input
-                v-model="form.mileage"
-                class="field-input"
-                placeholder="Ex: 45000"
-                type="number"
-                min="0"
-              />
+              <span class="field-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span>
+              <input v-model="form.mileage" class="field-input" :placeholder="$t('newServiceOrder.mileagePlaceholder')" type="number" min="0"/>
               <span class="field-suffix">km</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Seção: Dados do Cliente -->
-<div class="form-section">
-  <div class="section-header">
-    <div class="section-icon">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-        <circle cx="12" cy="7" r="4"/>
-      </svg>
-    </div>
-    <span>Dados do Cliente</span>
-  </div>
-
-  <div class="fields-grid">
-    
-    <!-- Nome do cliente -->
-    <div class="field-group full">
-      <label class="field-label">Nome do Cliente <span class="required">*</span></label>
-      <div class="field-wrapper">
-        <span class="field-icon">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
-        </span>
-        <input
-          v-model="form.customer"
-          class="field-input"
-          placeholder="Digite o nome do cliente"
-        />
-      </div>
-    </div>
-
-    <!-- Telefone -->
-    <div class="field-group full">
-      <label class="field-label">Telefone do Cliente <span class="required">*</span></label>
-      <div class="field-wrapper">
-        <span class="field-icon">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 5.45 5.45l.96-.87a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/>
-          </svg>
-        </span>
-        <input
-          v-model="form.phone"
-          class="field-input"
-          placeholder="(00) 00000-0000"
-          @input="maskPhone"
-          maxlength="15"
-        />
-      </div>
-    </div>
-
-  </div>
-</div>
-
-      <!-- Seção: Dados da Oficina -->
+      <!-- Cliente -->
       <div class="form-section">
         <div class="section-header">
           <div class="section-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-            </svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
-          <span>Dados da Oficina</span>
+          <span>{{ $t('newServiceOrder.clientSection') }}</span>
+        </div>
+
+        <div class="fields-grid">
+          <div class="field-group full">
+            <label class="field-label">{{ $t('newServiceOrder.customerName') }} <span class="required">*</span></label>
+            <div class="field-wrapper">
+              <span class="field-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+              <input v-model="form.customer" class="field-input" :placeholder="$t('newServiceOrder.customerNamePlaceholder')"/>
+            </div>
+          </div>
+
+          <div class="field-group full">
+            <label class="field-label">{{ $t('newServiceOrder.phone') }} <span class="required">*</span></label>
+            <div class="field-wrapper">
+              <span class="field-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 5.45 5.45l.96-.87a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/></svg></span>
+              <input v-model="form.phone" class="field-input" :placeholder="$t('newServiceOrder.phonePlaceholder')" @input="maskPhone" maxlength="15"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Oficina -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <span>{{ $t('newServiceOrder.workshopSection') }}</span>
         </div>
 
         <div class="fields-grid">
           <div class="field-group">
-            <label class="field-label">Funcionário Responsável <span class="required">*</span></label>
+            <label class="field-label">{{ $t('newServiceOrder.employee') }} <span class="required">*</span></label>
             <div class="field-wrapper">
-              <span class="field-icon">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              </span>
-              <input
-                v-model="form.employee"
-                class="field-input"
-                placeholder="Nome do funcionário"
-              />
+              <span class="field-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+              <input v-model="form.employee" class="field-input" :placeholder="$t('newServiceOrder.employeePlaceholder')"/>
             </div>
           </div>
 
           <div class="field-group">
-            <label class="field-label">Número do Box <span class="required">*</span></label>
+            <label class="field-label">{{ $t('newServiceOrder.boxNumber') }} <span class="required">*</span></label>
             <div class="field-wrapper">
-              <span class="field-icon">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-              </span>
-              <input
-                v-model="form.boxNumber"
-                class="field-input"
-                placeholder="Ex: 3"
-                type="number"
-                min="1"
-              />
+              <span class="field-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span>
+              <input v-model="form.boxNumber" class="field-input" :placeholder="$t('newServiceOrder.boxPlaceholder')" type="number" min="1"/>
             </div>
           </div>
 
           <div class="field-group">
-            <label class="field-label">Data de Entrada <span class="required">*</span></label>
+            <label class="field-label">{{ $t('newServiceOrder.entryDate') }} <span class="required">*</span></label>
             <div class="field-wrapper">
-              <span class="field-icon">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              </span>
-              <input
-                v-model="form.entryDate"
-                class="field-input"
-                type="date"
-              />
+              <span class="field-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+              <input v-model="form.entryDate" class="field-input" type="date"/>
             </div>
           </div>
         </div>
@@ -180,15 +114,15 @@
 
       <!-- Botões -->
       <div class="form-actions">
-        <button class="btn-cancel" @click="$router.back()">Cancelar</button>
+        <button class="btn-cancel" @click="$router.back()">{{ $t('newServiceOrder.cancel') }}</button>
         <button class="btn-save" :class="{ loading: isLoading }" @click="saveOrder">
           <span v-if="!isLoading">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-            Registrar Ordem
+            {{ $t('newServiceOrder.register') }}
           </span>
           <span v-else class="btn-spinner">
             <svg class="spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-            Salvando...
+            {{ $t('newServiceOrder.saving') }}
           </span>
         </button>
       </div>
@@ -235,13 +169,13 @@ export default {
 
     validate() {
       const { vnumber, customer, phone, mileage, employee, boxNumber, entryDate } = this.form
-      if (!vnumber) return 'Informe a placa do veículo'
-      if (!customer) return 'Informe o nome do cliente'
-      if (!phone) return 'Informe o telefone do cliente'
-      if (!mileage) return 'Informe a quilometragem'
-      if (!employee) return 'Informe o funcionário responsável'
-      if (!boxNumber) return 'Informe o número do box'
-      if (!entryDate) return 'Informe a data de entrada'
+      if (!vnumber)    return this.$t('newServiceOrder.errorPlate')
+      if (!customer)   return this.$t('newServiceOrder.errorCustomer')
+      if (!phone)      return this.$t('newServiceOrder.errorPhone')
+      if (!mileage)    return this.$t('newServiceOrder.errorMileage')
+      if (!employee)   return this.$t('newServiceOrder.errorEmployee')
+      if (!boxNumber)  return this.$t('newServiceOrder.errorBox')
+      if (!entryDate)  return this.$t('newServiceOrder.errorDate')
       return null
     },
 
@@ -271,7 +205,7 @@ export default {
 
         this.$router.push(`/service-orders/${data.order._id}`)
       } catch {
-        alert('Erro ao registrar ordem. Tente novamente.')
+        alert(this.$t('newServiceOrder.errorSave'))
       } finally {
         this.isLoading = false
       }
