@@ -114,4 +114,20 @@ router.post('/reset-password', async (req, res) => {
   }
 })
 
+router.put('/users/:id', async (req, res) => {
+  try {
+    const { email, password } = req.body
+    const update = { email }
+
+    if (password) {
+      update.password = await bcrypt.hash(password, 10)
+    }
+
+    const user = await User.findByIdAndUpdate(req.params.id, update, { new: true })
+    res.json({ success: true, user })
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message })
+  }
+})
+
 module.exports = router

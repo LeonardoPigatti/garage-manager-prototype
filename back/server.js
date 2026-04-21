@@ -15,5 +15,4 @@ connectDB()
 app.use('/', require('./routes/auth'))
 app.use('/oficina', require('./routes/oficina'))
 
-
 app.listen(3000, () => console.log('Servidor rodando na porta 3000'))
