@@ -59,7 +59,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="order in orders" :key="order._id" class="table-row">
+          <tr @click="$router.push(`/service-orders/${order._id}`)"  v-for="order in orders" :key="order._id" class="table-row">
             <td><span class="os-chip">{{ order.osNumber }}</span></td>
             <td><span class="plate-chip">{{ order.vnumber }}</span></td>
             <td class="td-main">{{ order.customer || '—' }}</td>
@@ -76,7 +76,7 @@
 
     <!-- ── CARDS ── -->
     <div v-else class="cards-grid">
-      <div v-for="order in orders" :key="order._id" class="card">
+      <div @click="$router.push(`/service-orders/${order._id}`)"  v-for="order in orders" :key="order._id" class="card">
 
         <!-- Topo do card -->
         <div class="card-top">
@@ -251,7 +251,7 @@ export default {
 }
 .table th:first-child { border-radius: 18px 0 0 0; }
 .table th:last-child { border-radius: 0 18px 0 0; }
-.table-row { border-bottom: 1px solid #f8fafc; transition: background 0.15s; }
+.table-row { border-bottom: 1px solid #f8fafc; transition: background 0.15s; cursor: pointer; }
 .table-row:last-child { border-bottom: none; }
 .table-row:hover { background: #f8fafc; }
 .table td { padding: 14px 16px; color: #334155; white-space: nowrap; }

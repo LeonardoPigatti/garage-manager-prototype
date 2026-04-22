@@ -8,6 +8,8 @@ import AllServices from '../pages/AllServices.vue'
 import ForgotPassword from '../pages/ForgotPassword.vue'
 import NewServiceOrder from '../pages/NewServiceOrder.vue'
 import Settings from '../pages/Settings.vue'
+import ServiceOrderDetail from '../pages/ServiceOrderDetail.vue'
+
 
 // import ServiceOrderDetail from '../pages/ServiceOrderDetail.vue' ← descomentar quando criar
 
@@ -24,6 +26,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'all-services', component: AllServices },
       { path: 'service-orders/new', component: NewServiceOrder },
       { path: 'settings', component: Settings },
+      { path: 'service-orders/:id', component: ServiceOrderDetail },
 
       // { path: 'service-orders/:id', component: ServiceOrderDetail },
     ]
