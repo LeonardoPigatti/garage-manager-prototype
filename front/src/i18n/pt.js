@@ -5,7 +5,7 @@ export default {
 },
 allServices: {
   title: 'Todos os Serviços',
-  subtitle: 'Você está na página de todos os serviços.'
+  subtitle: 'Listagem completa das ordens de serviço.'
 },
 forgotPassword: {
   heroTitle: 'Recupere\nseu acesso.',
