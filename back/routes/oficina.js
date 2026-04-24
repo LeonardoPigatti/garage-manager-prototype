@@ -34,16 +34,29 @@ router.get('/service-orders/:id', async (req, res) => {
   }
 })
 
+// ← ROTA PUT ADICIONADA AQUI, antes do /:userId
+router.put('/service-orders/:id', async (req, res) => {
+  try {
+    const order = await ServiceOrder.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    )
+    if (!order) return res.status(404).json({ success: false })
+    res.json({ success: true, order })
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message })
+  }
+})
+
 // ─── OFICINA ─────────────────────────────────────────
 
-// criar oficina — owner já entra como membro
 router.post('/', async (req, res) => {
   try {
     const oficina = await Oficina.create({
       ...req.body,
       membros: [req.body.ownerId]
     })
-    // vincula a oficina no user owner
     await User.findByIdAndUpdate(req.body.ownerId, { oficinaId: oficina._id })
     res.json({ success: true, oficina })
   } catch (err) {
@@ -51,24 +64,19 @@ router.post('/', async (req, res) => {
   }
 })
 
-// adicionar funcionário à oficina
 router.post('/:oficinaId/membros', async (req, res) => {
   try {
     const { userId } = req.body
-
     await User.findByIdAndUpdate(userId, { oficinaId: req.params.oficinaId })
-
     await Oficina.findByIdAndUpdate(req.params.oficinaId, {
       $addToSet: { membros: userId }
     })
-
     res.json({ success: true })
   } catch (err) {
     res.status(500).json({ success: false, error: err.message })
   }
 })
 
-// buscar oficina por userId (deve ficar por último — rota genérica)
 router.get('/:userId', async (req, res) => {
   try {
     const oficina = await Oficina.findOne({ ownerId: req.params.userId })
@@ -87,6 +95,52 @@ router.put('/:oficinaId', async (req, res) => {
       { new: true }
     )
     res.json({ success: true, oficina })
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message })
+  }
+})
+
+// Adicionar item à ordem
+router.post('/service-orders/:id/items', async (req, res) => {
+  try {
+    const order = await ServiceOrder.findByIdAndUpdate(
+      req.params.id,
+      { $push: { items: req.body } },
+      { new: true }
+    )
+    res.json({ success: true, order })
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message })
+  }
+})
+
+// Remover item da ordem
+router.delete('/service-orders/:id/items/:itemId', async (req, res) => {
+  try {
+    const order = await ServiceOrder.findByIdAndUpdate(
+      req.params.id,
+      { $pull: { items: { id: req.params.itemId } } },
+      { new: true }
+    )
+    res.json({ success: true, order })
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message })
+  }
+})
+
+// Editar item da ordem
+router.put('/service-orders/:id/items/:itemId', async (req, res) => {
+  try {
+    const order = await ServiceOrder.findOneAndUpdate(
+      { _id: req.params.id, 'items.id': req.params.itemId },
+      { $set: {
+        'items.$.item':     req.body.item,
+        'items.$.price':    req.body.price,
+        'items.$.quantity': req.body.quantity
+      }},
+      { new: true }
+    )
+    res.json({ success: true, order })
   } catch (err) {
     res.status(500).json({ success: false, error: err.message })
   }

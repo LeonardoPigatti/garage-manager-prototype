@@ -1,17 +1,14 @@
 <template>
   <div class="page">
 
-    <!-- Loading -->
     <div v-if="isLoading" class="state-wrap">
       <div class="spinner" />
       <p>Carregando ordem...</p>
     </div>
 
-    <!-- Não encontrado -->
     <div v-else-if="!order" class="state-wrap">
       <div class="state-icon">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
           <circle cx="12" cy="12" r="10"/>
           <line x1="12" y1="8" x2="12" y2="12"/>
           <line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -22,7 +19,6 @@
       <button class="btn-back-state" @click="$router.push('/all-services')">Voltar</button>
     </div>
 
-    <!-- Conteúdo -->
     <template v-else>
 
       <OrderDetailHeader
@@ -36,12 +32,20 @@
 
       <div class="content">
 
+        <!-- Status -->
+        <div class="status-bar">
+          <span class="status-chip" :class="statusClass(order.status)">
+            <span class="status-dot"></span>
+            {{ order.status || 'Programado' }}
+          </span>
+          <span class="status-hint">Edite a ordem para alterar o status</span>
+        </div>
+
         <!-- Veículo -->
         <div class="section">
           <div class="section-header">
             <div class="section-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="1" y="3" width="15" height="13" rx="2"/>
                 <path d="M16 8h4l3 5v3h-7V8z"/>
                 <circle cx="5.5" cy="18.5" r="2.5"/>
@@ -69,8 +73,7 @@
         <div class="section">
           <div class="section-header">
             <div class="section-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                 <circle cx="12" cy="7" r="4"/>
               </svg>
@@ -96,8 +99,7 @@
         <div class="section">
           <div class="section-header">
             <div class="section-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                 <polyline points="9 22 9 12 15 12 15 22"/>
               </svg>
@@ -123,7 +125,6 @@
           </div>
         </div>
 
-        <!-- Itens de serviço -->
         <ServiceItemsTable
           :items="serviceItems"
           :labor="0"
@@ -132,7 +133,6 @@
           @remove="removeItem"
         />
 
-        <!-- Meta -->
         <div class="meta-row">
           <div class="meta-item">
             <span class="meta-label">ID da Ordem</span>
@@ -151,7 +151,6 @@
       </div>
     </template>
 
-    <!-- Sheets -->
     <OrderEditSheet
       v-model:open="isEditSheetOpen"
       :order="order"
@@ -168,10 +167,10 @@
 </template>
 
 <script>
-import OrderDetailHeader  from '../components/OrderDetailHeader.vue'
-import OrderEditSheet     from '../components/OrderEditSheet.vue'
-import ServiceItemsTable  from '../components/ServiceItemsTable.vue'
-import ServiceItemSheet   from '../components/ServiceItemSheet.vue'
+import OrderDetailHeader from '../components/OrderDetailHeader.vue'
+import OrderEditSheet    from '../components/OrderEditSheet.vue'
+import ServiceItemsTable from '../components/ServiceItemsTable.vue'
+import ServiceItemSheet  from '../components/ServiceItemSheet.vue'
 
 export default {
   name: 'ServiceOrderDetail',
@@ -181,7 +180,7 @@ export default {
     return {
       isLoading:       true,
       order:           null,
-      serviceItems:    [],       // itens locais — conectar à API quando disponível
+      serviceItems:    [],
       isEditSheetOpen: false,
       isItemSheetOpen: false,
       editingItem:     null,
@@ -202,8 +201,7 @@ export default {
         const data = await res.json()
         if (data.success) {
           this.order = data.order
-          // Quando o backend tiver endpoint de itens, carregue aqui também:
-          // this.serviceItems = data.order.items ?? []
+          this.serviceItems = data.order.items ?? []
         }
       } catch (err) {
         console.error('Erro ao buscar ordem:', err)
@@ -225,6 +223,7 @@ export default {
             employee:  formData.employee,
             boxNumber: Number(formData.boxNumber),
             entryDate: formData.entryDate,
+            status:    formData.status,
           })
         })
         const data = await res.json()
@@ -240,13 +239,8 @@ export default {
     },
 
     handleExportPDF() {
-      // TODO: implementar geração de PDF
       console.log('Export PDF — a implementar')
     },
-
-    // Itens de serviço — locais por enquanto
-    // Quando o backend tiver endpoint de itens, substitua cada função
-    // por um fetch para o endpoint correspondente
 
     openAddItem() {
       this.editingItem = null
@@ -258,43 +252,59 @@ export default {
       this.isItemSheetOpen = true
     },
 
-    handleItemSave(data) {
-      // TODO quando backend pronto:
-      // POST http://localhost:3000/oficina/service-orders/${this.order._id}/items
-      // body: { item: data.item, price: data.price, quantity: data.quantity }
-      if (this.editingItem) {
-        this.serviceItems = this.serviceItems.map(i =>
-          i.id === this.editingItem.id ? { ...i, ...data } : i
-        )
-      } else {
-        this.serviceItems.push({
-          ...data,
-          id: String(Date.now()),
-          orderId: this.order._id,
-        })
+    async handleItemSave(data) {
+      try {
+        if (this.editingItem) {
+          const res = await fetch(
+            `http://localhost:3000/oficina/service-orders/${this.order._id}/items/${this.editingItem.id}`,
+            { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }
+          )
+          const result = await res.json()
+          if (result.success) this.serviceItems = result.order.items
+        } else {
+          const newItem = { ...data, id: String(Date.now()) }
+          const res = await fetch(
+            `http://localhost:3000/oficina/service-orders/${this.order._id}/items`,
+            { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newItem) }
+          )
+          const result = await res.json()
+          if (result.success) this.serviceItems = result.order.items
+        }
+      } catch (err) {
+        console.error('Erro ao salvar item:', err)
+        alert('Erro ao salvar item.')
       }
       this.editingItem = null
     },
 
-    removeItem(id) {
-      // TODO quando backend pronto:
-      // DELETE http://localhost:3000/oficina/service-orders/${this.order._id}/items/${id}
-      this.serviceItems = this.serviceItems.filter(i => i.id !== id)
+    async removeItem(id) {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/oficina/service-orders/${this.order._id}/items/${id}`,
+          { method: 'DELETE' }
+        )
+        const result = await res.json()
+        if (result.success) this.serviceItems = result.order.items
+      } catch (err) {
+        console.error('Erro ao remover item:', err)
+        alert('Erro ao remover item.')
+      }
+    },
+
+    statusClass(status) {
+      if (status === 'Em Progresso') return 'status-progress'
+      if (status === 'Concluído')    return 'status-done'
+      return 'status-scheduled'
     },
 
     formatDate(date) {
       if (!date) return '—'
-      return new Date(date).toLocaleDateString('pt-BR', {
-        day: '2-digit', month: '2-digit', year: 'numeric'
-      })
+      return new Date(date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
     },
 
     formatDateTime(date) {
       if (!date) return '—'
-      return new Date(date).toLocaleDateString('pt-BR', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit'
-      })
+      return new Date(date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
     },
   },
 }
@@ -304,29 +314,36 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-.page {
-  min-height: 100vh; background: #f1f5f9;
-  font-family: 'DM Sans', sans-serif; padding: 32px 24px 48px;
-}
-
+.page { min-height: 100vh; background: #f1f5f9; font-family: 'DM Sans', sans-serif; padding: 32px 24px 48px; }
 .content { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
 
-/* Section compartilhada (veículo, cliente, oficina) */
-.section {
-  background: #fff; border-radius: 18px;
-  border: 1px solid rgba(0,0,0,0.05); padding: 24px 28px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
-}
-.section-header {
+/* ── STATUS BAR ── */
+.status-bar {
   display: flex; align-items: center; gap: 12px;
-  margin-bottom: 20px; padding-bottom: 16px;
-  border-bottom: 1px solid #f1f5f9;
+  background: #fff; border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.05);
+  padding: 14px 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
-.section-icon {
-  width: 34px; height: 34px; background: #e8eeff;
-  border-radius: 9px; display: flex; align-items: center;
-  justify-content: center; color: #1a1f5e; flex-shrink: 0;
+
+.status-chip {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13px; font-weight: 500;
+  padding: 5px 14px; border-radius: 20px;
 }
+
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+.status-scheduled { background: #f1f5f9; color: #475569; }
+.status-progress   { background: #fffbeb; color: #92400e; }
+.status-done       { background: #f0fdf4; color: #166534; }
+
+.status-hint { font-size: 12px; color: #94a3b8; }
+
+/* ── SECTION ── */
+.section { background: #fff; border-radius: 18px; border: 1px solid rgba(0,0,0,0.05); padding: 24px 28px; box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04); }
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #f1f5f9; }
+.section-icon { width: 34px; height: 34px; background: #e8eeff; border-radius: 9px; display: flex; align-items: center; justify-content: center; color: #1a1f5e; flex-shrink: 0; }
 .section-title { display: block; font-family: 'Syne', sans-serif; font-size: 14px; color: #0d1f3c; }
 .section-sub   { display: block; font-size: 12px; color: #94a3b8; margin-top: 2px; }
 
@@ -337,23 +354,13 @@ export default {
 .plate-chip { font-family: 'Syne', sans-serif; font-size: 20px; color: #001B35; letter-spacing: 3px; font-weight: 700; }
 .box-chip { font-size: 14px; font-weight: 500; background: #e8eeff; color: #1a1f5e; padding: 4px 12px; border-radius: 20px; width: fit-content; }
 
-/* Meta */
 .meta-row { display: flex; gap: 12px; flex-wrap: wrap; }
-.meta-item {
-  flex: 1; min-width: 180px; background: #fff;
-  border-radius: 12px; border: 1px solid rgba(0,0,0,0.05);
-  padding: 14px 18px; display: flex; flex-direction: column; gap: 4px;
-}
+.meta-item { flex: 1; min-width: 180px; background: #fff; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05); padding: 14px 18px; display: flex; flex-direction: column; gap: 4px; }
 .meta-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
 .meta-value { font-size: 13px; color: #334155; }
 .meta-value.mono { font-family: monospace; font-size: 11px; color: #64748b; word-break: break-all; }
 
-/* States */
-.state-wrap {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 12px; padding: 80px 20px; color: #94a3b8;
-}
+.state-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 80px 20px; color: #94a3b8; }
 .state-icon { width: 56px; height: 56px; background: #e8eeff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1a1f5e; }
 .state-title { font-family: 'Syne', sans-serif; font-size: 16px; color: #0d1f3c; }
 .state-sub   { font-size: 13px; color: #94a3b8; }
@@ -361,7 +368,6 @@ export default {
 .btn-back-state { height: 38px; padding: 0 20px; background: #001B35; color: #fff; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
-
 @media (max-width: 600px) {
   .page { padding: 20px 16px 40px; }
   .info-grid { grid-template-columns: 1fr; }
