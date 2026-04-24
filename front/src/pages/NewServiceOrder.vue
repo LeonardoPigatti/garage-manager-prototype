@@ -196,7 +196,9 @@ export default {
             mileage: Number(this.form.mileage),
             employee: this.form.employee,
             boxNumber: Number(this.form.boxNumber),
-            entryDate: this.form.entryDate
+            entryDate: this.form.entryDate,
+            status: 'Programado', // padrão ao criar
+
           })
         })
 

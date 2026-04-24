@@ -9,6 +9,11 @@ const ServiceOrderSchema = new mongoose.Schema({
   employee:  { type: String },
   boxNumber: { type: Number },
   entryDate: { type: Date },
+  status: {
+  type: String,
+  enum: ['Programado', 'Em Progresso', 'Concluído'],
+  default: 'Programado'
+},
   items: [{
     id:       { type: String },
     item:     { type: String },
