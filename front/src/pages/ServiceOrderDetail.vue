@@ -168,10 +168,10 @@
 </template>
 
 <script>
-import OrderDetailHeader  from '../components/OrderDetailHeader.vue'
-import OrderEditSheet     from '../components/OrderEditSheet.vue'
-import ServiceItemsTable  from '../components/ServiceItemsTable.vue'
-import ServiceItemSheet   from '../components/ServiceItemSheet.vue'
+import OrderDetailHeader from '../components/OrderDetailHeader.vue'
+import OrderEditSheet    from '../components/OrderEditSheet.vue'
+import ServiceItemsTable from '../components/ServiceItemsTable.vue'
+import ServiceItemSheet  from '../components/ServiceItemSheet.vue'
 
 export default {
   name: 'ServiceOrderDetail',
@@ -181,7 +181,7 @@ export default {
     return {
       isLoading:       true,
       order:           null,
-      serviceItems:    [],       // itens locais — conectar à API quando disponível
+      serviceItems:    [],
       isEditSheetOpen: false,
       isItemSheetOpen: false,
       editingItem:     null,
@@ -202,8 +202,7 @@ export default {
         const data = await res.json()
         if (data.success) {
           this.order = data.order
-          // Quando o backend tiver endpoint de itens, carregue aqui também:
-          // this.serviceItems = data.order.items ?? []
+          this.serviceItems = data.order.items ?? []
         }
       } catch (err) {
         console.error('Erro ao buscar ordem:', err)
@@ -240,13 +239,8 @@ export default {
     },
 
     handleExportPDF() {
-      // TODO: implementar geração de PDF
       console.log('Export PDF — a implementar')
     },
-
-    // Itens de serviço — locais por enquanto
-    // Quando o backend tiver endpoint de itens, substitua cada função
-    // por um fetch para o endpoint correspondente
 
     openAddItem() {
       this.editingItem = null
@@ -258,28 +252,51 @@ export default {
       this.isItemSheetOpen = true
     },
 
-    handleItemSave(data) {
-      // TODO quando backend pronto:
-      // POST http://localhost:3000/oficina/service-orders/${this.order._id}/items
-      // body: { item: data.item, price: data.price, quantity: data.quantity }
-      if (this.editingItem) {
-        this.serviceItems = this.serviceItems.map(i =>
-          i.id === this.editingItem.id ? { ...i, ...data } : i
-        )
-      } else {
-        this.serviceItems.push({
-          ...data,
-          id: String(Date.now()),
-          orderId: this.order._id,
-        })
+    async handleItemSave(data) {
+      try {
+        if (this.editingItem) {
+          const res = await fetch(
+            `http://localhost:3000/oficina/service-orders/${this.order._id}/items/${this.editingItem.id}`,
+            {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            }
+          )
+          const result = await res.json()
+          if (result.success) this.serviceItems = result.order.items
+        } else {
+          const newItem = { ...data, id: String(Date.now()) }
+          const res = await fetch(
+            `http://localhost:3000/oficina/service-orders/${this.order._id}/items`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(newItem)
+            }
+          )
+          const result = await res.json()
+          if (result.success) this.serviceItems = result.order.items
+        }
+      } catch (err) {
+        console.error('Erro ao salvar item:', err)
+        alert('Erro ao salvar item.')
       }
       this.editingItem = null
     },
 
-    removeItem(id) {
-      // TODO quando backend pronto:
-      // DELETE http://localhost:3000/oficina/service-orders/${this.order._id}/items/${id}
-      this.serviceItems = this.serviceItems.filter(i => i.id !== id)
+    async removeItem(id) {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/oficina/service-orders/${this.order._id}/items/${id}`,
+          { method: 'DELETE' }
+        )
+        const result = await res.json()
+        if (result.success) this.serviceItems = result.order.items
+      } catch (err) {
+        console.error('Erro ao remover item:', err)
+        alert('Erro ao remover item.')
+      }
     },
 
     formatDate(date) {
@@ -311,7 +328,6 @@ export default {
 
 .content { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
 
-/* Section compartilhada (veículo, cliente, oficina) */
 .section {
   background: #fff; border-radius: 18px;
   border: 1px solid rgba(0,0,0,0.05); padding: 24px 28px;
@@ -337,7 +353,6 @@ export default {
 .plate-chip { font-family: 'Syne', sans-serif; font-size: 20px; color: #001B35; letter-spacing: 3px; font-weight: 700; }
 .box-chip { font-size: 14px; font-weight: 500; background: #e8eeff; color: #1a1f5e; padding: 4px 12px; border-radius: 20px; width: fit-content; }
 
-/* Meta */
 .meta-row { display: flex; gap: 12px; flex-wrap: wrap; }
 .meta-item {
   flex: 1; min-width: 180px; background: #fff;
@@ -348,7 +363,6 @@ export default {
 .meta-value { font-size: 13px; color: #334155; }
 .meta-value.mono { font-family: monospace; font-size: 11px; color: #64748b; word-break: break-all; }
 
-/* States */
 .state-wrap {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
