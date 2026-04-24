@@ -137,6 +137,7 @@ export default {
   background: #fff; z-index: 50;
   display: flex; flex-direction: column;
   box-shadow: -4px 0 24px rgba(0,0,0,0.1);
+  overflow: hidden;
 }
 
 .sheet-header {
@@ -154,12 +155,16 @@ export default {
 .close-btn:hover { background: #e2e8f0; }
 
 .sheet-body {
-  flex: 1; overflow-y: auto; padding: 20px 24px;
+  flex: 1; overflow-y: visible; padding: 20px 24px;
   display: flex; flex-direction: column; gap: 16px;
 }
 
 .field { display: flex; flex-direction: column; gap: 6px; }
-.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px; /* era 12px, aumentei */
+}
 .label { font-size: 12px; color: #64748b; font-weight: 500; }
 .input {
   height: 38px; padding: 0 12px;
@@ -167,6 +172,7 @@ export default {
   font-family: 'DM Sans', sans-serif; font-size: 13px; color: #334155;
   background: #fff; outline: none; transition: border 0.2s;
   width: 100%;
+  box-sizing: border-box; /* garante que não gruda na borda */
 }
 .input:focus { border-color: #001B35; }
 .input::placeholder { color: #cbd5e1; }

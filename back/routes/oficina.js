@@ -34,16 +34,29 @@ router.get('/service-orders/:id', async (req, res) => {
   }
 })
 
+// ← ROTA PUT ADICIONADA AQUI, antes do /:userId
+router.put('/service-orders/:id', async (req, res) => {
+  try {
+    const order = await ServiceOrder.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    )
+    if (!order) return res.status(404).json({ success: false })
+    res.json({ success: true, order })
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message })
+  }
+})
+
 // ─── OFICINA ─────────────────────────────────────────
 
-// criar oficina — owner já entra como membro
 router.post('/', async (req, res) => {
   try {
     const oficina = await Oficina.create({
       ...req.body,
       membros: [req.body.ownerId]
     })
-    // vincula a oficina no user owner
     await User.findByIdAndUpdate(req.body.ownerId, { oficinaId: oficina._id })
     res.json({ success: true, oficina })
   } catch (err) {
@@ -51,24 +64,19 @@ router.post('/', async (req, res) => {
   }
 })
 
-// adicionar funcionário à oficina
 router.post('/:oficinaId/membros', async (req, res) => {
   try {
     const { userId } = req.body
-
     await User.findByIdAndUpdate(userId, { oficinaId: req.params.oficinaId })
-
     await Oficina.findByIdAndUpdate(req.params.oficinaId, {
       $addToSet: { membros: userId }
     })
-
     res.json({ success: true })
   } catch (err) {
     res.status(500).json({ success: false, error: err.message })
   }
 })
 
-// buscar oficina por userId (deve ficar por último — rota genérica)
 router.get('/:userId', async (req, res) => {
   try {
     const oficina = await Oficina.findOne({ ownerId: req.params.userId })
